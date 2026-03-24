@@ -164,6 +164,22 @@ h2 {
   margin-top: 24px;
 }
 
+.hero-points {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hero-points span {
+  border: 1px solid rgba(173, 220, 255, 0.2);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: rgba(9, 25, 39, 0.5);
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -258,6 +274,32 @@ h2 {
   margin: 54px auto 0;
 }
 
+.quick-proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.quick-proof article {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(9, 25, 39, 0.55);
+  padding: 14px;
+}
+
+.quick-proof strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.quick-proof span {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .section-head {
   max-width: 740px;
 }
@@ -295,6 +337,83 @@ h2 {
   border-radius: var(--radius);
   padding: 20px;
   background: linear-gradient(180deg, rgba(19, 58, 88, 0.55), rgba(12, 36, 56, 0.68));
+}
+
+.cta-strip {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(120deg, rgba(9, 25, 39, 0.84), rgba(18, 51, 72, 0.62));
+  padding: 18px;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cta-strip h3 {
+  font-size: clamp(1.05rem, 2.1vw, 1.35rem);
+}
+
+.before-after-grid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.before-after-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(9, 25, 39, 0.52);
+}
+
+.before-after-card h3 {
+  font-size: 1rem;
+}
+
+.before-after-pair {
+  margin-top: 11px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.before-after-slot {
+  border: 1px dashed rgba(173, 220, 255, 0.26);
+  border-radius: 10px;
+  min-height: 128px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.83rem;
+  background: rgba(5, 14, 23, 0.55);
+}
+
+.faq-list {
+  margin-top: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.faq-list details {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(9, 25, 39, 0.52);
+  padding: 12px 14px;
+}
+
+.faq-list summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.faq-list p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .features-row {
@@ -383,6 +502,16 @@ footer {
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;
+  }
+
+  .quick-proof,
+  .before-after-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-strip {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   nav {
