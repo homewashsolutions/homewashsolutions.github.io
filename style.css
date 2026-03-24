@@ -490,6 +490,13 @@ h2 {
   font-size: 0.95rem;
 }
 
+.contact-region {
+  margin-top: 8px;
+  font-size: 0.84rem;
+  color: var(--muted);
+  opacity: 0.92;
+}
+
 footer {
   width: min(1120px, 92%);
   margin: 0 auto 24px;
