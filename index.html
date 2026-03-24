@@ -235,15 +235,12 @@
   <script>
     const whatsappPhone = "5519995864306";
     const baseWhatsappMessage = "Oi, vim do site e gostaria de fazer um orcamento.";
+    const encodedWhatsappMessage = encodeURIComponent(baseWhatsappMessage);
+    const whatsappAppUrl = `whatsapp://send?phone=${whatsappPhone}&text=${encodedWhatsappMessage}`;
+    const whatsappWebUrl = `https://wa.me/${whatsappPhone}?text=${encodedWhatsappMessage}`;
     const isMobileDevice = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent || "");
 
     document.querySelectorAll('[data-whatsapp-link="true"]').forEach((link) => {
-      const origin = link.dataset.whatsappOrigin || "origem_nao_identificada";
-      const fullMessage = `${baseWhatsappMessage} [origem: ${origin}]`;
-      const encodedWhatsappMessage = encodeURIComponent(fullMessage);
-      const whatsappAppUrl = `whatsapp://send?phone=${whatsappPhone}&text=${encodedWhatsappMessage}`;
-      const whatsappWebUrl = `https://wa.me/${whatsappPhone}?text=${encodedWhatsappMessage}`;
-
       link.href = isMobileDevice ? whatsappAppUrl : whatsappWebUrl;
       link.addEventListener("click", () => {
         if (!isMobileDevice) {
