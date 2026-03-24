@@ -169,6 +169,7 @@ h2 {
   align-items: center;
   justify-content: center;
   gap: 9px;
+  white-space: nowrap;
   border-radius: 12px;
   padding: 11px 18px;
   text-decoration: none;
@@ -407,6 +408,11 @@ footer {
   .topbar {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .btn {
+    font-size: 0.9rem;
+    padding: 10px 14px;
   }
 
   .brand span {
