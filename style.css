@@ -331,11 +331,11 @@ h2 {
 }
 
 .contact-qr {
-  width: 184px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: rgba(9, 25, 39, 0.56);
-  padding: 10px;
+  width: 160px;
+  border: 1px solid rgba(173, 220, 255, 0.16);
+  border-radius: 12px;
+  background: rgba(9, 25, 39, 0.36);
+  padding: 9px;
   display: grid;
   gap: 6px;
   justify-self: end;
@@ -344,19 +344,19 @@ h2 {
 .contact-qr img {
   width: 100%;
   height: auto;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #fff;
 }
 
 .qr-title {
   margin: 0;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.87rem;
 }
 
 .qr-caption {
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   line-height: 1.35;
 }
 
@@ -398,7 +398,7 @@ footer {
   }
 
   .contact-qr {
-    width: min(184px, 70vw);
+    width: min(160px, 62vw);
     justify-self: start;
   }
 }
