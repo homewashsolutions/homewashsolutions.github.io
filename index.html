@@ -10,6 +10,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18009410978"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-18009410978');
+  </script>
 </head>
 <body>
   <div class="bg-orb orb-a"></div>
@@ -339,6 +347,21 @@
     });
 
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Registrar conversão de lead no Google Ads (AW-18009410978) a cada clique no WhatsApp
+    document.querySelectorAll('.btn-whatsapp').forEach((botao) => {
+      botao.addEventListener('click', () => {
+        if (typeof gtag === 'function') {
+          gtag('event', 'conversion', {
+            send_to: 'AW-18009410978/definicao_do_evento',
+            value: 1.0,
+            currency: 'BRL',
+            event_category: 'contato',
+            event_label: botao.dataset.whatsappOrigin || 'whatsapp'
+          });
+        }
+      });
+    });
   </script>
 </body>
 </html>
