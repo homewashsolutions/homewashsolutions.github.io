@@ -1,20 +1,25 @@
 from __future__ import annotations
 
+import argparse
 import re
+import unicodedata
 from pathlib import Path
 
 from PIL import Image, ImageEnhance, ImageOps
 
 
 BASE_DIR = Path(__file__).resolve().parent
-INPUT_DIR = BASE_DIR / "photo_input"
-OUTPUT_DIR = BASE_DIR / "assets" / "resultados"
-TARGET_SIZE = (1200, 900)
+DEFAULT_INPUT_DIR = BASE_DIR / "photo_input"
+DEFAULT_OUTPUT_DIR = BASE_DIR / "assets" / "resultados"
+DEFAULT_TARGET_SIZE = (1200, 900)
+DEFAULT_QUALITY = 86
 SUPPORTED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 
 
 def slugify(filename: str) -> str:
-    normalized = filename.lower().strip()
+    normalized = unicodedata.normalize("NFKD", filename)
+    normalized = normalized.encode("ascii", "ignore").decode("ascii")
+    normalized = normalized.lower().strip()
     normalized = re.sub(r"\s+", "_", normalized)
     normalized = re.sub(r"[^a-z0-9_-]", "", normalized)
     return normalized or "imagem"
@@ -35,42 +40,58 @@ def crop_to_ratio(image: Image.Image, target_width: int, target_height: int) -> 
     return image.crop((0, top, source_width, top + new_height))
 
 
-def process_image(source_path: Path, output_path: Path) -> None:
+def process_image(source_path: Path, output_path: Path, target_size: tuple[int, int], quality: int) -> None:
     with Image.open(source_path) as image:
         image = ImageOps.exif_transpose(image).convert("RGB")
         image = ImageOps.autocontrast(image, cutoff=1)
-        image = crop_to_ratio(image, *TARGET_SIZE)
-        image = image.resize(TARGET_SIZE, Image.Resampling.LANCZOS)
+        image = crop_to_ratio(image, *target_size)
+        image = image.resize(target_size, Image.Resampling.LANCZOS)
 
         image = ImageEnhance.Contrast(image).enhance(1.05)
         image = ImageEnhance.Color(image).enhance(1.03)
         image = ImageEnhance.Sharpness(image).enhance(1.08)
 
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        image.save(output_path, "WEBP", quality=86, method=6)
+        image.save(output_path, "WEBP", quality=quality, method=6)
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Prepara fotos para a pasta de resultados do site.")
+    parser.add_argument("--input-dir", type=Path, default=DEFAULT_INPUT_DIR, help="Pasta com fotos originais")
+    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR, help="Pasta de saida WEBP")
+    parser.add_argument("--width", type=int, default=DEFAULT_TARGET_SIZE[0], help="Largura de saida")
+    parser.add_argument("--height", type=int, default=DEFAULT_TARGET_SIZE[1], help="Altura de saida")
+    parser.add_argument("--quality", type=int, default=DEFAULT_QUALITY, help="Qualidade WEBP (0-100)")
+    return parser.parse_args()
 
 
 def main() -> None:
-    INPUT_DIR.mkdir(parents=True, exist_ok=True)
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    args = parse_args()
+    input_dir: Path = args.input_dir
+    output_dir: Path = args.output_dir
+    target_size = (args.width, args.height)
+    quality = max(0, min(100, args.quality))
+
+    input_dir.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     source_files = sorted(
-        path for path in INPUT_DIR.iterdir() if path.is_file() and path.suffix.lower() in SUPPORTED_EXTENSIONS
+        path for path in input_dir.iterdir() if path.is_file() and path.suffix.lower() in SUPPORTED_EXTENSIONS
     )
 
     if not source_files:
-        print("Nenhuma foto encontrada em photo_input.")
+        print(f"Nenhuma foto encontrada em {input_dir.as_posix()}.")
         print("Coloque imagens JPG, JPEG, PNG ou WEBP nessa pasta e execute novamente.")
         return
 
     for source_path in source_files:
         output_name = f"{slugify(source_path.stem)}.webp"
-        output_path = OUTPUT_DIR / output_name
-        process_image(source_path, output_path)
-        print(f"OK: {source_path.name} -> assets/resultados/{output_name}")
+        output_path = output_dir / output_name
+        process_image(source_path, output_path, target_size, quality)
+        print(f"OK: {source_path.name} -> {output_path.relative_to(BASE_DIR).as_posix()}")
 
     print("Tratamento concluido.")
-    print("As imagens prontas estao em assets/resultados.")
+    print(f"As imagens prontas estao em {output_dir.relative_to(BASE_DIR).as_posix()}.")
 
 
 if __name__ == "__main__":
