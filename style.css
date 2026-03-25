@@ -93,6 +93,7 @@ body {
 nav {
   display: inline-flex;
   gap: 18px;
+  flex-wrap: wrap;
 }
 
 nav a {
@@ -733,6 +734,15 @@ footer {
   .topbar {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  nav {
+    width: 100%;
+    gap: 10px;
+  }
+
+  nav a {
+    font-size: 0.9rem;
   }
 
   .btn {

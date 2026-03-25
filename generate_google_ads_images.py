@@ -1,17 +1,18 @@
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
 
-from PIL import Image, ImageOps
+from PIL import Image, ImageDraw, ImageOps
 
 
 BASE_DIR = Path(__file__).resolve().parent
-SOURCE_DIR = BASE_DIR / "assets" / "resultados"
-OUTPUT_DIR = SOURCE_DIR / "google_ads"
+DEFAULT_SOURCE_DIR = BASE_DIR / "assets" / "resultados"
+DEFAULT_OUTPUT_DIR = DEFAULT_SOURCE_DIR / "google_ads"
 
 LANDSCAPE = (1200, 628)
 SQUARE = (1200, 1200)
-JPEG_QUALITY = 92
+DEFAULT_JPEG_QUALITY = 92
 
 # Antes/depois recomendados com melhor enquadramento entre as fotos reais.
 BEFORE_AFTER_PAIRS = [
@@ -52,27 +53,31 @@ def fit_size(image: Image.Image, target_size: tuple[int, int]) -> Image.Image:
     return cropped.resize(target_size, Image.Resampling.LANCZOS)
 
 
-def save_jpg(image: Image.Image, output_path: Path) -> None:
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    image.save(output_path, "JPEG", quality=JPEG_QUALITY, optimize=True, progressive=True)
-
-
-def make_hero_variants(filename: str, base_name: str) -> list[Path]:
-    source_path = SOURCE_DIR / filename
+def make_hero_variants(filename: str, base_name: str, source_dir: Path, output_dir: Path, quality: int) -> list[Path]:
+    source_path = source_dir / filename
     image = open_rgb(source_path)
 
     outputs: list[Path] = []
     for suffix, size in (("1200x628", LANDSCAPE), ("1200x1200", SQUARE)):
-        out = OUTPUT_DIR / f"{base_name}_{suffix}.jpg"
-        save_jpg(fit_size(image, size), out)
+        out = output_dir / f"{base_name}_{suffix}.jpg"
+        fitted = fit_size(image, size)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        fitted.save(out, "JPEG", quality=quality, optimize=True, progressive=True)
         outputs.append(out)
 
     return outputs
 
 
-def make_before_after_variants(before_file: str, after_file: str, base_name: str) -> list[Path]:
-    before = open_rgb(SOURCE_DIR / before_file)
-    after = open_rgb(SOURCE_DIR / after_file)
+def make_before_after_variants(
+    before_file: str,
+    after_file: str,
+    base_name: str,
+    source_dir: Path,
+    output_dir: Path,
+    quality: int,
+) -> list[Path]:
+    before = open_rgb(source_dir / before_file)
+    after = open_rgb(source_dir / after_file)
 
     outputs: list[Path] = []
     for suffix, size in (("1200x628", LANDSCAPE), ("1200x1200", SQUARE)):
@@ -90,28 +95,44 @@ def make_before_after_variants(before_file: str, after_file: str, base_name: str
 
         # Linha divisoria para reforcar o efeito comparativo.
         divider_x = width // 2
-        for y in range(height):
-            combined.putpixel((divider_x, y), (255, 255, 255))
+        draw = ImageDraw.Draw(combined)
+        draw.line((divider_x, 0, divider_x, height), fill=(255, 255, 255), width=2)
 
-        out = OUTPUT_DIR / f"{base_name}_{suffix}.jpg"
-        save_jpg(combined, out)
+        out = output_dir / f"{base_name}_{suffix}.jpg"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        combined.save(out, "JPEG", quality=quality, optimize=True, progressive=True)
         outputs.append(out)
 
     return outputs
 
 
-def main() -> None:
-    if not SOURCE_DIR.exists():
-        raise FileNotFoundError(f"Pasta nao encontrada: {SOURCE_DIR}")
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Gera imagens JPG para Google Ads a partir das fotos tratadas.")
+    parser.add_argument("--source-dir", type=Path, default=DEFAULT_SOURCE_DIR, help="Pasta com imagens base")
+    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR, help="Pasta de saida para Ads")
+    parser.add_argument("--quality", type=int, default=DEFAULT_JPEG_QUALITY, help="Qualidade JPEG (0-100)")
+    return parser.parse_args()
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+def main() -> None:
+    args = parse_args()
+    source_dir: Path = args.source_dir
+    output_dir: Path = args.output_dir
+    quality = max(0, min(100, args.quality))
+
+    if not source_dir.exists():
+        raise FileNotFoundError(f"Pasta nao encontrada: {source_dir}")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
     generated: list[Path] = []
 
     for filename, base_name in HERO_IMAGES:
-        generated.extend(make_hero_variants(filename, base_name))
+        generated.extend(make_hero_variants(filename, base_name, source_dir, output_dir, quality))
 
     for before_file, after_file, base_name in BEFORE_AFTER_PAIRS:
-        generated.extend(make_before_after_variants(before_file, after_file, base_name))
+        generated.extend(
+            make_before_after_variants(before_file, after_file, base_name, source_dir, output_dir, quality)
+        )
 
     print("Arquivos gerados:")
     for path in generated:
