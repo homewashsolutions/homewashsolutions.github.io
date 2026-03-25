@@ -183,60 +183,7 @@
       <p class="kicker">Resultados reais</p>
       <h2>Antes e depois para mostrar a diferenca no acabamento</h2>
     </div>
-    <div class="before-after-grid">
-      <article class="before-after-card">
-        <h3>Sofa retratil - Caso 1</h3>
-        <div class="before-after-pair">
-          <div class="before-after-slot">
-            <img class="before-after-image" src="assets/resultados/sofa1a.webp" alt="Sofa retratil antes da limpeza" width="1200" height="900" loading="lazy" />
-            <span class="before-after-label">Antes</span>
-          </div>
-          <div class="before-after-slot">
-            <img class="before-after-image" src="assets/resultados/sofa1d.webp" alt="Sofa retratil depois da limpeza" width="1200" height="900" loading="lazy" />
-            <span class="before-after-label">Depois</span>
-          </div>
-        </div>
-      </article>
-      <article class="before-after-card">
-        <h3>Sofa marrom - Caso 2</h3>
-        <div class="before-after-pair">
-          <div class="before-after-slot">
-            <img class="before-after-image" src="assets/resultados/sofa2a.webp" alt="Sofa marrom antes da limpeza" width="1200" height="900" loading="lazy" />
-            <span class="before-after-label">Antes</span>
-          </div>
-          <div class="before-after-slot">
-            <img class="before-after-image" src="assets/resultados/sofa2d.webp" alt="Sofa marrom depois da limpeza" width="1200" height="900" loading="lazy" />
-            <span class="before-after-label">Depois</span>
-          </div>
-        </div>
-      </article>
-      <article class="before-after-card">
-        <h3>Colchao - Caso 3</h3>
-        <div class="before-after-pair">
-          <div class="before-after-slot">
-            <img class="before-after-image" src="assets/resultados/colchao1a.webp" alt="Colchao antes da higienizacao" width="1200" height="900" loading="lazy" />
-            <span class="before-after-label">Antes</span>
-          </div>
-          <div class="before-after-slot">
-            <img class="before-after-image" src="assets/resultados/colchao1d.webp" alt="Colchao depois da higienizacao" width="1200" height="900" loading="lazy" />
-            <span class="before-after-label">Depois</span>
-          </div>
-        </div>
-      </article>
-      <article class="before-after-card">
-        <h3>Sofa cinza - Caso 4</h3>
-        <div class="before-after-pair">
-          <div class="before-after-slot">
-            <img class="before-after-image" src="assets/resultados/sofa3a.webp" alt="Sofa cinza antes da limpeza" width="1200" height="900" loading="lazy" />
-            <span class="before-after-label">Antes</span>
-          </div>
-          <div class="before-after-slot">
-            <img class="before-after-image" src="assets/resultados/sofa3d.webp" alt="Sofa cinza depois da limpeza" width="1200" height="900" loading="lazy" />
-            <span class="before-after-label">Depois</span>
-          </div>
-        </div>
-      </article>
-    </div>
+    <div id="before-after-grid" class="before-after-grid"></div>
   </section>
 
   <section id="depoimentos" class="section testimonials">
@@ -456,6 +403,56 @@
     });
 
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ── Renderização dinâmica da seção de Resultados ─────────────────────────
+    (function () {
+      var DEFAULTS = [
+        { id: 'c1', titulo: 'Sofa retratil - Caso 1',
+          antes:  { src: 'assets/resultados/sofa1a.webp',    alt: 'Sofa retratil antes da limpeza' },
+          depois: { src: 'assets/resultados/sofa1d.webp',    alt: 'Sofa retratil depois da limpeza' } },
+        { id: 'c2', titulo: 'Sofa marrom - Caso 2',
+          antes:  { src: 'assets/resultados/sofa2a.webp',    alt: 'Sofa marrom antes da limpeza' },
+          depois: { src: 'assets/resultados/sofa2d.webp',    alt: 'Sofa marrom depois da limpeza' } },
+        { id: 'c3', titulo: 'Colchao - Caso 3',
+          antes:  { src: 'assets/resultados/colchao1a.webp', alt: 'Colchao antes da higienizacao' },
+          depois: { src: 'assets/resultados/colchao1d.webp', alt: 'Colchao depois da higienizacao' } },
+        { id: 'c4', titulo: 'Sofa cinza - Caso 4',
+          antes:  { src: 'assets/resultados/sofa3a.webp',    alt: 'Sofa cinza antes da limpeza' },
+          depois: { src: 'assets/resultados/sofa3d.webp',    alt: 'Sofa cinza depois da limpeza' } }
+      ];
+
+      function esc(s) {
+        return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function safeSrc(s) {
+        if (!s) return '';
+        if (/^data:image\/(jpeg|png|webp|gif);base64,/.test(s)) return s;
+        if (/^assets\//.test(s)) return s;
+        if (/^https?:\/\//.test(s)) return s;
+        return '';
+      }
+
+      var grid = document.getElementById('before-after-grid');
+      if (!grid) return;
+
+      try {
+        var stored = localStorage.getItem('hw_resultados');
+        var data = stored ? JSON.parse(stored) : DEFAULTS;
+        grid.innerHTML = data.map(function (c) {
+          var anteSrc  = safeSrc(c.antes  && c.antes.src);
+          var depSrc   = safeSrc(c.depois && c.depois.src);
+          return '<article class="before-after-card">'
+            + '<h3>' + esc(c.titulo) + '</h3>'
+            + '<div class="before-after-pair">'
+            + (anteSrc ? '<div class="before-after-slot"><img class="before-after-image" src="' + esc(anteSrc) + '" alt="' + esc(c.antes.alt) + '" width="1200" height="900" loading="lazy" /><span class="before-after-label">Antes</span></div>' : '')
+            + (depSrc  ? '<div class="before-after-slot"><img class="before-after-image" src="' + esc(depSrc)  + '" alt="' + esc(c.depois.alt) + '" width="1200" height="900" loading="lazy" /><span class="before-after-label">Depois</span></div>' : '')
+            + '</div></article>';
+        }).join('');
+      } catch (e) {
+        console.error('Erro ao carregar resultados:', e);
+      }
+    }());
   </script>
 </body>
 </html>
