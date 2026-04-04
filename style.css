@@ -810,6 +810,10 @@ footer {
 }
 
 @media (max-width: 560px) {
+  body {
+    padding-bottom: 88px;
+  }
+
   .topbar {
     flex-direction: column;
     align-items: flex-start;
@@ -829,12 +833,39 @@ footer {
     padding: 10px 14px;
   }
 
+  .cta-row {
+    width: 100%;
+  }
+
+  .cta-row .btn {
+    width: 100%;
+  }
+
+  .hero-proof {
+    font-size: 0.92rem;
+  }
+
+  .hero-highlights {
+    gap: 10px;
+  }
+
+  .hero-alert {
+    padding: 13px;
+  }
+
+  .hero-points span {
+    width: 100%;
+    text-align: center;
+  }
+
   .wa-float {
     display: inline-flex;
     right: 12px;
     bottom: 12px;
     left: 12px;
     justify-content: center;
+    padding: 14px 16px;
+    border-radius: 16px;
   }
 
   .brand span {

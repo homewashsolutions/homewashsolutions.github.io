@@ -361,31 +361,17 @@
     const GOOGLE_ADS_ACCOUNT_ID = "AW-18009410978";
 
     const whatsappPhone = "5519995864306";
-    const baseWhatsappMessage = "Ola! Vi o site da Home Wash Solutions e gostaria de solicitar um orcamento para limpeza de estofados. Como funciona?";
+    const baseWhatsappMessage = [
+      "Ola! Vi o site da Home Wash Solutions e gostaria de pedir um orcamento.",
+      "Ja vou enviar a foto do estofado e meu bairro para agilizar o atendimento."
+    ].join("\n");
     const isMobileDevice = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent || "");
     const currentUrl = new URL(window.location.href);
     const search = currentUrl.searchParams;
     const GOOGLE_ADS_WHATSAPP_CONVERSION_LABEL = (search.get("ads_label") || "sadtCPDopo8cEKKbx4tD").trim();
 
-    function buildTrackingSuffix(origin) {
-      const trackingFields = [
-        ["utm_source", search.get("utm_source") || "site"],
-        ["utm_medium", search.get("utm_medium") || "organico"],
-        ["utm_campaign", search.get("utm_campaign") || "nao_informado"],
-        ["utm_content", search.get("utm_content") || origin],
-        ["utm_term", search.get("utm_term") || ""],
-        ["gclid", search.get("gclid") || ""]
-      ];
-
-      const parts = trackingFields
-        .filter(([, value]) => value)
-        .map(([key, value]) => `${key}=${value}`);
-
-      return parts.length ? `\n\nOrigem: ${parts.join(" | ")}` : "";
-    }
-
     function buildWhatsappUrl(origin, mobile) {
-      const message = `${baseWhatsappMessage}${buildTrackingSuffix(origin)}`;
+      const message = baseWhatsappMessage;
       const encodedMessage = encodeURIComponent(message);
 
       if (mobile) {
