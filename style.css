@@ -158,11 +158,47 @@ h2 {
   margin: 16px 0 0;
 }
 
+.hero-proof {
+  margin: 14px 0 0;
+  max-width: 62ch;
+  color: var(--text);
+  font-size: 0.97rem;
+  line-height: 1.55;
+  font-weight: 600;
+}
+
 .cta-row {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 24px;
+}
+
+.hero-highlights {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.hero-highlights article {
+  border: 1px solid rgba(22, 228, 183, 0.26);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(14, 49, 72, 0.82), rgba(8, 22, 35, 0.72));
+  padding: 14px;
+}
+
+.hero-highlights strong {
+  display: block;
+  font-size: 0.98rem;
+}
+
+.hero-highlights span {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 0.89rem;
+  line-height: 1.5;
 }
 
 .hero-points {
@@ -499,6 +535,45 @@ h2 {
   gap: 10px;
 }
 
+.steps-grid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.step-card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(19, 58, 88, 0.68), rgba(12, 36, 56, 0.56));
+}
+
+.step-number {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(22, 228, 183, 0.14);
+  border: 1px solid rgba(22, 228, 183, 0.32);
+  color: var(--accent);
+  font-weight: 700;
+  font-family: "Sora", sans-serif;
+}
+
+.step-card h3 {
+  margin-top: 14px;
+  font-size: 1.02rem;
+}
+
+.step-card p {
+  margin: 9px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
 .feature-pill {
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -672,14 +747,16 @@ footer {
   display: none;
   align-items: center;
   gap: 8px;
-  padding: 11px 14px;
+  padding: 13px 16px;
+  max-width: calc(100vw - 32px);
   border-radius: 999px;
   color: #fff;
   text-decoration: none;
   font-weight: 700;
+  font-size: 0.95rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: linear-gradient(135deg, var(--whatsapp), var(--whatsapp-strong));
-  box-shadow: 0 12px 24px rgba(37, 211, 102, 0.35);
+  box-shadow: 0 16px 32px rgba(37, 211, 102, 0.4);
 }
 
 .wa-float:hover {
@@ -692,6 +769,8 @@ footer {
   }
 
   .quick-proof,
+  .hero-highlights,
+  .steps-grid,
   .before-after-grid,
   .testimonials-grid {
     grid-template-columns: 1fr;
@@ -752,6 +831,10 @@ footer {
 
   .wa-float {
     display: inline-flex;
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    justify-content: center;
   }
 
   .brand span {
